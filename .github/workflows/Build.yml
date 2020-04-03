@@ -27,9 +27,6 @@ jobs:
         run: |
           dotnet publish src/MyWeb --output publish/MyWeb --runtime linux-x64
           (cd publish; zip -r MyWeb.zip MyWeb)
-      - name: Echo
-        run: |
-          echo ${{ steps.changelog.outputs.changelog }}
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
