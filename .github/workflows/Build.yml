@@ -26,7 +26,7 @@ jobs:
       - name: Build installer
         run: |
           dotnet publish src/MyWeb --output publish/MyWeb --runtime linux-x64
-          (cd .publish; zip -r MyWeb.zip MyWeb)
+          (cd publish; zip -r MyWeb.zip MyWeb)
       - name: Echo
         run: |
           echo ${{ steps.changelog.outputs.changelog }}
