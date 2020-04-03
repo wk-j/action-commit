@@ -8,40 +8,46 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v0.2.3
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.100
-
       - name: Get the version
         id: get-version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-
       - name: Build installer
         run: |
           dotnet publish src/MyWeb --output publish/MyWeb --runtime linux-x64
           (cd .publish; zip -r MyWeb.zip MyWeb)
-
       - name: Echo
         run: |
-          run: echo "${{ steps.changelog.outputs.changelog }}"}
-
-      # - name: Upload web
-      #   uses: svenstaro/upload-release-action@v1-release
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: publish/MyWeb.zip
-      #     asset_name: MyWeb.${{ steps.get-version.outputs.VERSION }}.zip
-      #     tag: ${{ github.ref }}
-      #     overwrite: true
+          echo ${{ steps.changelog.outputs.changelog }}
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: publish/MyWeb.zip
+          asset_name: MyWeb.zip
+          asset_content_type: application/zip
