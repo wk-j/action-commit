@@ -6,14 +6,15 @@ on:
       - "*"
 
 jobs:
-  build-client:
+  Build:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Fetch all history for all tags and branches
-        run: git fetch --depth=10000
+        # run: git fetch --depth=10000
+        run: git fetch --prune --unshallow
 
       - name: Use GitVersion
         id: gitversion # step id used as reference for output values
