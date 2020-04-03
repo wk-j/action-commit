@@ -17,7 +17,7 @@ jobs:
         id: changelog
         uses: metcalfc/changelog-generator@v0.2.3
         with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}}
+          myToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
