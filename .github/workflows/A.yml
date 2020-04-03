@@ -1,4 +1,4 @@
-name: create-release
+name: A
 on:
   push:
     # Sequence of patterns matched against refs/tags
