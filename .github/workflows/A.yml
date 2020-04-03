@@ -12,13 +12,11 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v0.2.3
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
