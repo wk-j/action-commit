@@ -20,9 +20,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.100
-      - name: Get the version
-        id: get-version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Build installer
         run: |
           dotnet publish src/MyWeb --output publish/MyWeb --runtime linux-x64
@@ -46,5 +43,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: publish/MyWeb.zip
-          asset_name: MyWeb.zip
+          asset_name: MyWeb-${{ github.ref }}.zip
           asset_content_type: application/zip
