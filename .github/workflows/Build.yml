@@ -11,19 +11,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v0.2.3
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.100
+
       - name: Build installer
         run: |
           dotnet publish src/MyWeb --output publish/MyWeb --runtime linux-x64
           (cd publish; zip -r MyWeb.zip MyWeb)
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -35,6 +39,11 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+
+      - name: Get the version
+        id: get-version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -43,5 +52,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: publish/MyWeb.zip
-          asset_name: MyWeb-${{ github.ref }}.zip
+          asset_name: MyWeb-${{ steps.get-version.outputs.VERSION }}.zip
           asset_content_type: application/zip
